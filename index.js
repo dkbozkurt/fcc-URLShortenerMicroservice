@@ -65,7 +65,7 @@ app.post('/api/shorturl', function (req, res) {
                 let original_url = urlObj.href;
                 let short_url = 1;
                 // Get the last short_url from the database
-                URLModel.findOne({}).sort({ short_url: "desc" }).limit(1).then((lastURL) => {
+                URLModel.find({}).sort({ short_url: "desc" }).limit(1).then((lastURL) => {
                     if (lastURL.length > 0) {
                         // Increment the latest short URL by adding 1
                         short_url = parseInt(lastURL[0].short_url)+1;
