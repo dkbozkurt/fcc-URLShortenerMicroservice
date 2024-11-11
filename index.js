@@ -63,15 +63,23 @@ app.post('/api/shorturl', function (req, res) {
             // We have a valid URL
             else {
                 let original_url = urlObj.href;
-                let short_url = 1
-                let resObj = {
-                    original_url: original_url,
-                    short_url: short_url
-                }
-                // Create an entry in the database
-                let newURL = new URLModel(resObj);
-                newURL.save()
-                res.json(resObj);
+                let short_url = 1;
+                // Get the last short_url from the database
+                URLModel.findOne({}).sort({ short_url: "desc" }).limit(1).then((lastURL) => {
+                    if (lastURL.length > 0) {
+                        // Increment the latest short URL by adding 1
+                        short_url = parseInt(lastURL[0].short_url)+1;
+                    }
+                    let resObj = {
+                        original_url: original_url,
+                        short_url: short_url
+                    }
+
+                    // Create an entry in the database
+                    let newURL = new URLModel(resObj);
+                    newURL.save()
+                    res.json(resObj);
+                })
             }
         })
     }
